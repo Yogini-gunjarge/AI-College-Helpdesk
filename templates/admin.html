@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #222;
+        }
+
+        h2 {
+            color: #222;
+            margin-top: 30px;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        /* Summary Cards */
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            margin-top: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            flex: 1;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            background-color: #f1f3f5;
+            border: 1px solid #ddd;
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .card p {
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        /* Search Box */
+
+        #searchBox {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        /* Tables */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #eeeeee;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Status */
+
+        select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        /* Update Button */
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            background-color: #eeeeee;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>AI College Helpdesk - Admin Dashboard</h1>
+
+
+    <!-- Summary Cards -->
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>{{ total_tickets }}</h2>
+            <p>Total Tickets</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ pending }}</h2>
+            <p>Pending</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ in_progress }}</h2>
+            <p>In Progress</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ resolved }}</h2>
+            <p>Resolved</p>
+        </div>
+
+    </div>
+
+
+    <!-- Category-wise Summary -->
+
+    <h2>Category-wise Ticket Summary</h2>
+
+    <table>
+
+        <tr>
+            <th>Category</th>
+            <th>Total Tickets</th>
+        </tr>
+
+        {% for category in category_counts %}
+
+        <tr>
+            <td>{{ category[0] }}</td>
+            <td>{{ category[1] }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+
+    <!-- Priority-wise Summary -->
+
+    <h2>Priority-wise Ticket Summary</h2>
+
+    <table>
+
+        <tr>
+            <th>Priority</th>
+            <th>Total Tickets</th>
+        </tr>
+
+        {% for priority in priority_counts %}
+
+        <tr>
+            <td>{{ priority[0] }}</td>
+            <td>{{ priority[1] }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+
+    <!-- Search Tickets -->
+
+    <h2>Search Tickets</h2>
+
+    <input
+        type="text"
+        id="searchBox"
+        placeholder="Search by name, problem, category, priority or status..."
+        onkeyup="searchTickets()"
+    >
+
+
+    <!-- All Tickets -->
+
+    <h2>All Tickets</h2>
+
+    <table id="ticketTable">
+
+        <tr>
+            <th>ID</th>
+            <th>Student Name</th>
+            <th>Problem</th>
+            <th>Category</th>
+            <th>Priority</th>
+            <th>Date & Time</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+
+
+        {% for ticket in tickets %}
+
+        <tr>
+
+            <td>
+                {{ ticket[0] }}
+            </td>
+
+            <td>
+                {{ ticket[1] }}
+            </td>
+
+            <td>
+                {{ ticket[2] }}
+            </td>
+
+            <td>
+                {{ ticket[3] }}
+            </td>
+
+            <td>
+                {{ ticket[4] }}
+            </td>
+
+            <td>
+                {{ ticket[5] }}
+            </td>
+
+
+            <!-- Status -->
+
+            <td>
+
+                <form
+                    id="statusForm{{ ticket[0] }}"
+                    action="/update_status/{{ ticket[0] }}"
+                    method="POST"
+                >
+
+                    <select name="status">
+
+                        <option
+                            value="Pending"
+                            {% if ticket[6] == "Pending" %}
+                            selected
+                            {% endif %}
+                        >
+                            Pending
+                        </option>
+
+                        <option
+                            value="In Progress"
+                            {% if ticket[6] == "In Progress" %}
+                            selected
+                            {% endif %}
+                        >
+                            In Progress
+                        </option>
+
+                        <option
+                            value="Resolved"
+                            {% if ticket[6] == "Resolved" %}
+                            selected
+                            {% endif %}
+                        >
+                            Resolved
+                        </option>
+
+                    </select>
+
+                </form>
+
+            </td>
+
+
+            <!-- Action -->
+
+            <td>
+
+                <button
+                    type="submit"
+                    form="statusForm{{ ticket[0] }}"
+                >
+                    Update
+                </button>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+
+<!-- Search JavaScript -->
+
+<script>
+
+function searchTickets() {
+
+    let input = document
+        .getElementById("searchBox")
+        .value
+        .toLowerCase();
+
+    let table = document
+        .getElementById("ticketTable");
+
+    let rows = table
+        .getElementsByTagName("tr");
+
+
+    for (let i = 1; i < rows.length; i++) {
+
+        let text = rows[i]
+            .innerText
+            .toLowerCase();
+
+        if (text.includes(input)) {
+
+            rows[i].style.display = "";
+
+        } else {
+
+            rows[i].style.display = "none";
+
+        }
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>

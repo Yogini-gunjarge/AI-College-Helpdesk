@@ -30,8 +30,6 @@
             border-radius: 10px;
         }
 
-        /* Summary Cards */
-
         .cards {
             display: flex;
             gap: 20px;
@@ -58,8 +56,6 @@
             font-weight: bold;
         }
 
-        /* Search Box */
-
         #searchBox {
             width: 100%;
             padding: 12px;
@@ -68,8 +64,6 @@
             border-radius: 6px;
             margin-top: 10px;
         }
-
-        /* Tables */
 
         table {
             width: 100%;
@@ -92,15 +86,11 @@
             background-color: #f5f5f5;
         }
 
-        /* Status */
-
         select {
             padding: 8px;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
-
-        /* Update Button */
 
         button {
             padding: 8px 12px;
@@ -111,8 +101,10 @@
             background-color: #eeeeee;
         }
 
+        .table-container {
+            overflow-x: auto;
+        }
     </style>
-
 </head>
 
 <body>
@@ -121,9 +113,7 @@
 
     <h1>AI College Helpdesk - Admin Dashboard</h1>
 
-
     <!-- Summary Cards -->
-
     <div class="cards">
 
         <div class="card">
@@ -150,174 +140,184 @@
 
 
     <!-- Category-wise Summary -->
-
     <h2>Category-wise Ticket Summary</h2>
 
     <table>
-
         <tr>
             <th>Category</th>
             <th>Total Tickets</th>
         </tr>
 
         {% for category in category_counts %}
-
         <tr>
             <td>{{ category[0] }}</td>
             <td>{{ category[1] }}</td>
         </tr>
-
         {% endfor %}
 
     </table>
 
 
     <!-- Priority-wise Summary -->
-
     <h2>Priority-wise Ticket Summary</h2>
 
     <table>
-
         <tr>
             <th>Priority</th>
             <th>Total Tickets</th>
         </tr>
 
         {% for priority in priority_counts %}
-
         <tr>
             <td>{{ priority[0] }}</td>
             <td>{{ priority[1] }}</td>
         </tr>
-
         {% endfor %}
 
     </table>
 
 
     <!-- Search Tickets -->
-
     <h2>Search Tickets</h2>
 
     <input
         type="text"
         id="searchBox"
-        placeholder="Search by name, problem, category, priority or status..."
+        placeholder="Search by name, department, problem, category, priority or status..."
         onkeyup="searchTickets()"
     >
 
 
     <!-- All Tickets -->
-
     <h2>All Tickets</h2>
 
-    <table id="ticketTable">
+    <div class="table-container">
 
-        <tr>
-            <th>ID</th>
-            <th>Student Name</th>
-            <th>Problem</th>
-            <th>Category</th>
-            <th>Priority</th>
-            <th>Date & Time</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
+        <table id="ticketTable">
 
-
-        {% for ticket in tickets %}
-
-        <tr>
-
-            <td>
-                {{ ticket[0] }}
-            </td>
-
-            <td>
-                {{ ticket[1] }}
-            </td>
-
-            <td>
-                {{ ticket[2] }}
-            </td>
-
-            <td>
-                {{ ticket[3] }}
-            </td>
-
-            <td>
-                {{ ticket[4] }}
-            </td>
-
-            <td>
-                {{ ticket[5] }}
-            </td>
+            <tr>
+                <th>ID</th>
+                <th>Student Name</th>
+                <th>Department</th>
+                <th>Problem</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
 
 
-            <!-- Status -->
+            {% for ticket in tickets %}
 
-            <td>
+            <tr>
 
-                <form
-                    id="statusForm{{ ticket[0] }}"
-                    action="/update_status/{{ ticket[0] }}"
-                    method="POST"
-                >
-
-                    <select name="status">
-
-                        <option
-                            value="Pending"
-                            {% if ticket[6] == "Pending" %}
-                            selected
-                            {% endif %}
-                        >
-                            Pending
-                        </option>
-
-                        <option
-                            value="In Progress"
-                            {% if ticket[6] == "In Progress" %}
-                            selected
-                            {% endif %}
-                        >
-                            In Progress
-                        </option>
-
-                        <option
-                            value="Resolved"
-                            {% if ticket[6] == "Resolved" %}
-                            selected
-                            {% endif %}
-                        >
-                            Resolved
-                        </option>
-
-                    </select>
-
-                </form>
-
-            </td>
+                <!-- ID -->
+                <td>
+                    {{ ticket[0] }}
+                </td>
 
 
-            <!-- Action -->
+                <!-- Student Name -->
+                <td>
+                    {{ ticket[1] }}
+                </td>
 
-            <td>
 
-                <button
-                    type="submit"
-                    form="statusForm{{ ticket[0] }}"
-                >
-                    Update
-                </button>
+                <!-- Department -->
+                <td>
+                    {{ ticket[2] }}
+                </td>
 
-            </td>
 
-        </tr>
+                <!-- Problem -->
+                <td>
+                    {{ ticket[3] }}
+                </td>
 
-        {% endfor %}
 
-    </table>
+                <!-- Category -->
+                <td>
+                    {{ ticket[4] }}
+                </td>
+
+
+                <!-- Priority -->
+                <td>
+                    {{ ticket[5] }}
+                </td>
+
+
+                <!-- Date & Time -->
+                <td>
+                    {{ ticket[6] }}
+                </td>
+
+
+                <!-- Status -->
+                <td>
+
+                    <form
+                        id="statusForm{{ ticket[0] }}"
+                        action="/update_status/{{ ticket[0] }}"
+                        method="POST"
+                    >
+
+                        <select name="status">
+
+                            <option
+                                value="Pending"
+                                {% if ticket[7] == "Pending" %}
+                                selected
+                                {% endif %}
+                            >
+                                Pending
+                            </option>
+
+                            <option
+                                value="In Progress"
+                                {% if ticket[7] == "In Progress" %}
+                                selected
+                                {% endif %}
+                            >
+                                In Progress
+                            </option>
+
+                            <option
+                                value="Resolved"
+                                {% if ticket[7] == "Resolved" %}
+                                selected
+                                {% endif %}
+                            >
+                                Resolved
+                            </option>
+
+                        </select>
+
+                    </form>
+
+                </td>
+
+
+                <!-- Action -->
+                <td>
+
+                    <button
+                        type="submit"
+                        form="statusForm{{ ticket[0] }}"
+                    >
+                        Update
+                    </button>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
 
 </div>
 
@@ -361,7 +361,6 @@ function searchTickets() {
 }
 
 </script>
-
 
 </body>
 

@@ -28,7 +28,7 @@
             font-weight: bold;
         }
 
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 12px;
             margin-top: 8px;
@@ -40,14 +40,7 @@
         textarea {
             resize: vertical;
         }
-select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 8px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-sizing: border-box;
-}
+
         button {
             width: 100%;
             padding: 12px;
@@ -57,6 +50,12 @@ select {
             cursor: pointer;
             font-size: 16px;
             font-weight: bold;
+            background-color: #222;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #444;
         }
     </style>
 </head>
@@ -69,29 +68,64 @@ select {
 
     <form action="/predict" method="POST">
 
+        <!-- Student Name -->
         <label>Student Name:</label>
-        <input type="text" name="student_name"
-               placeholder="Enter your name" required>
+        <input type="text"
+               name="student_name"
+               placeholder="Enter your name"
+               required>
 
         <br><br>
 
+        <!-- Department -->
+        <label>Department:</label>
+
+        <select name="department" required>
+            <option value="">Select Department</option>
+            <option value="Information Technology">
+                Information Technology
+            </option>
+            <option value="Computer Engineering">
+                Computer Engineering
+            </option>
+            <option value="Electronics">
+                Electronics
+            </option>
+            <option value="Mechanical">
+                Mechanical
+            </option>
+            <option value="Civil">
+                Civil
+            </option>
+        </select>
+
+        <br><br>
+
+        <!-- Problem -->
         <label>Problem:</label>
-        <textarea name="ticket" rows="6"
+        <textarea name="ticket"
+                  rows="6"
                   placeholder="Describe your problem here..."
                   required></textarea>
-<br><br>
 
-<label>Priority:</label>
+        <br><br>
 
-<select name="priority" required>
-    <option value="">Select Priority</option>
-    <option value="Low">Low</option>
-    <option value="Medium">Medium</option>
-    <option value="High">High</option>
-</select>
+        <!-- Priority -->
+        <label>Priority:</label>
 
-<br><br>
-        <button type="submit">Classify Ticket</button>
+        <select name="priority" required>
+            <option value="">Select Priority</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+        </select>
+
+        <br><br>
+
+        <!-- Submit -->
+        <button type="submit">
+            Classify Ticket
+        </button>
 
     </form>
 
